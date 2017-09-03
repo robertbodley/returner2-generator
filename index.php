@@ -10,4 +10,9 @@ $app->get('/', function ($request, $response, $args) {
     return $controller->indexLoad();
 });
 
+$app->get('/generate', function ($request, $response, $args) {
+    $controller = new Controller();
+    return $controller->generateLoad();
+});
+
 $app->run();

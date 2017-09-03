@@ -11,6 +11,12 @@ class ComposerStaticInit8be1a5c8938d99884068b51163a7246e
     );
 
     public static $prefixLengthsPsr4 = array (
+        'Z' => 
+        array (
+            'Zend\\Validator\\' => 15,
+            'Zend\\Stdlib\\' => 12,
+            'Zend\\Escaper\\' => 13,
+        ),
         'S' => 
         array (
             'Slim\\' => 5,
@@ -19,6 +25,8 @@ class ComposerStaticInit8be1a5c8938d99884068b51163a7246e
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PhpOffice\\PhpWord\\' => 18,
+            'PhpOffice\\Common\\' => 17,
         ),
         'I' => 
         array (
@@ -31,6 +39,18 @@ class ComposerStaticInit8be1a5c8938d99884068b51163a7246e
     );
 
     public static $prefixDirsPsr4 = array (
+        'Zend\\Validator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-validator/src',
+        ),
+        'Zend\\Stdlib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-stdlib/src',
+        ),
+        'Zend\\Escaper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-escaper/src',
+        ),
         'Slim\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
@@ -42,6 +62,14 @@ class ComposerStaticInit8be1a5c8938d99884068b51163a7246e
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PhpOffice\\PhpWord\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
+        ),
+        'PhpOffice\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/common/src/Common',
         ),
         'Interop\\Container\\' => 
         array (
@@ -63,12 +91,17 @@ class ComposerStaticInit8be1a5c8938d99884068b51163a7246e
         ),
     );
 
+    public static $classMap = array (
+        'PclZip' => __DIR__ . '/..' . '/pclzip/pclzip/pclzip.lib.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit8be1a5c8938d99884068b51163a7246e::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit8be1a5c8938d99884068b51163a7246e::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit8be1a5c8938d99884068b51163a7246e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit8be1a5c8938d99884068b51163a7246e::$classMap;
 
         }, null, ClassLoader::class);
     }

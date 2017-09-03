@@ -66,6 +66,21 @@ class View
 								</div>
 								<div class='clear'></div>
 							</div>
+
+							<div class='form-group margin-bottom'>
+								<div class='col-sm-6'>
+									<label for='exampleInputEmail1'>Type</label>
+									<select class='form-control'>
+										<option value='0'>Test</option>
+										<option value='1'>Quiz</option>
+									</select>
+								</div>
+								<div class='col-sm-6'>
+									<label for='exampleInputEmail1'>Number of Questions</label>
+									<input class='form-control' type='number' min='1' max='32' value='16'>
+								</div>
+								<div class='clear'></div>
+							</div>
 							
 							<div class='form-group'>
 								<div class='col-sm-12'>
