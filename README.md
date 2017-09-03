@@ -1,5 +1,5 @@
 # returner2-generator
-##Install Composer
+## Install Composer
 Composer is a PHP dependency manager
 https://getcomposer.org/download/
 ```
