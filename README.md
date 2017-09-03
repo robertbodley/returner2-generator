@@ -1,4 +1,4 @@
-# returner2-generator
+# Returner 2 Front-page Generator Web Application
 ## Install Composer
 Composer is a PHP dependency manager
 https://getcomposer.org/download/
