@@ -1,4 +1,9 @@
 # Returner 2 Front-page Generator Web Application
+## Run Server
+```
+php -S localhost:8000
+```
+
 ## Install Composer
 Composer is a PHP dependency manager
 https://getcomposer.org/download/
