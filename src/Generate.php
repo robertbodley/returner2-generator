@@ -5,17 +5,15 @@
 */
 class Generate
 {
-	function __construct()
-	{
-		# code...
-	}
+	public $filename = '';
 
-	function generateQuiz($type, $noQuestions, $noAnswers, $department, $courseCode) {
+	function generateQuiz($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate) {
 		$filePath = $_SERVER["DOCUMENT_ROOT"] .'/assets/template/Template-'. $type .'.docx';
 		$templateProcessor = new \PhpOffice\PhpWord\Template($filePath);
 		$templateProcessor->setValue('department', $department);
 		
-		$qrCode = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=234';
+		# saves a generated qr code to a temp folder and the places it in the doc
+		$qrCode = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=some_type_of_data';
 		$tmpfname = tempnam("/tmp", "UL_IMAGE");
 		$img = file_get_contents($qrCode);
 		file_put_contents($tmpfname, $img);
@@ -23,7 +21,7 @@ class Generate
 
 		# Answer string buildup
 		$answerBlocks = "";
-		for ($i=0; $i <= $noAnswers; $i++) { 
+		for ($i=0; $i < $noAnswers; $i++) { 
 			$answerBlocks.="□ ";
 		}
 
@@ -36,8 +34,11 @@ class Generate
 				$templateProcessor->setValue($field, "");
 			}
 		}
-		// Saving the document as ODF file...
-		$templateProcessor->saveAs('user-data/2.docx');
+
+		// Save document as docx
+		$this->filename = $courseCode . '-' . $type . '-' . mt_rand(100,999);
+		$templateProcessor->saveAs('user-data/'.$this->filename.'.docx');
+
 		return "Generated";
 	}
 }

@@ -1,6 +1,12 @@
 {
     "require": {
         "slim/slim": "^3.0",
-        "phpoffice/phpword": "^0.13.0"
-    }
+        "phpoffice/phpword": "^0.13.0",
+        "gears/pdf": "^0.4.1"
+    },
+    "scripts":
+	{
+		"post-install-cmd": ["PhantomInstaller\\Installer::installPhantomJS"],
+		"post-update-cmd": ["PhantomInstaller\\Installer::installPhantomJS"]
+	}
 }

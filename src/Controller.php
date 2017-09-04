@@ -17,8 +17,19 @@ class Controller
 	}
 
 	function generateLoad() {
+		print_r($_GET);
 		$Generator = new Generate();
-		$Generator->generateQuiz("Quiz", 16, 4, "Computer Science2", "CSC3003S");
+		$Generator->generateQuiz($_GET['testType'], $_GET['noq'], $_GET['noapq'], $_GET['department'], $_GET['courseCode'], $_GET['testDate']);
+
+		$file_url = '/user-data/CSC3002S-Test-269.docx';
+		$parts = pathinfo($file_url);
+		$fsize = filesize($file_url);
+ 		header("Content-Length: ".$fsize);
+		header('Content-type: application/vnd.openxmlformats- officedocument.wordprocessingml.document');
+	    header('Content-Disposition: attachment; filename="'.$parts['basename'].'"');
+	    ob_clean();
+	    flush();
+	    readfile($_SERVER["DOCUMENT_ROOT"] . '/user-data/' . $Generator->filename . '.docx');
 
 	}
 }

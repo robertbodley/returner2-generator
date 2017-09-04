@@ -19,11 +19,12 @@ class View
 				<title>{$title}</title>
 				
 				<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-				<link rel='stylesheet' type='text/css' href='../assets/style.css'>
+				<link rel='stylesheet' type='text/css' href='/assets/style.css'>
 			</head>
 			<body>
 				{$body}
 				<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+				<script src='/assets/main.js'></script>
 			</body>
 			</html>
 		";
@@ -42,15 +43,15 @@ class View
 							<p class='lead'>Fill in the form below and click generate.</p>
 						</div>
 
-						<form>
+						<form action='/generate' method='get'>
 							<div class='form-group'>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Test Name</label>
-									<input type='text' class='form-control' placeholder='Test 1'>
+									<input name='testName' type='text' class='form-control' placeholder='Test 1'>
 								</div>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Test Date</label>
-									<input type='text' class='form-control' placeholder='7 May 1996'>
+									<input name='testDate' type='date' class='form-control' placeholder='07/05/1996'>
 								</div>
 								<div class='clear'></div>
 							</div>
@@ -58,11 +59,11 @@ class View
 							<div class='form-group margin-bottom'>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Course Code</label>
-									<input type='text' class='form-control' placeholder='CSC3003S'>
+									<input name='courseCode' type='text' class='form-control' placeholder='CSC3003S'>
 								</div>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Number of Questions</label>
-									<input class='form-control' type='number' min='1' max='32' value='16'>
+									<input name='noq' class='form-control' type='number' min='1' max='30' value='15'>
 								</div>
 								<div class='clear'></div>
 							</div>
@@ -70,14 +71,22 @@ class View
 							<div class='form-group margin-bottom'>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Type</label>
-									<select class='form-control'>
-										<option value='0'>Test</option>
-										<option value='1'>Quiz</option>
+									<select name='testType' class='form-control'>
+										<option value='Test'>Test</option>
+										<option value='Quiz'>Quiz</option>
 									</select>
 								</div>
 								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Number of Questions</label>
-									<input class='form-control' type='number' min='1' max='32' value='16'>
+									<label for='exampleInputEmail1'>Number of Answers per Questions</label>
+									<input name='noapq' class='form-control' type='number' min='1' max='10' value='5'>
+								</div>
+								<div class='clear'></div>
+							</div>
+
+							<div class='form-group margin-bottom'>
+								<div class='col-sm-6'>
+									<label for='exampleInputEmail1'>Department</label>
+									<input name='department' class='form-control' type='text' placeholder='Computer Science'>
 								</div>
 								<div class='clear'></div>
 							</div>
