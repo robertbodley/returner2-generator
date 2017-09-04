@@ -584,4 +584,14 @@ class TemplateProcessor
 
         return substr($this->tempDocumentMainPart, $startPosition, ($endPosition - $startPosition));
     }
+
+    public function save_image($id,$filepath,&$document=null) { 
+        if(file_exists($filepath))
+        {
+            $this->_objZip->deleteName('word/media/'.$id);          
+            $this->_objZip->addFile ($filepath,'word/media/'.$id);
+            //$document->setValue($id.'::width', "300px");
+            //$document->setValue($id.'::height', "300px");
+        }   
+    }
 }
