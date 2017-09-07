@@ -17,7 +17,6 @@ class Controller
 	}
 
 	function generateLoad() {
-		print_r($_GET);
 		$Generator = new Generate();
 		$Generator->generateQuiz($_GET['testType'], $_GET['noq'], $_GET['noapq'], $_GET['department'], $_GET['courseCode'], $_GET['testDate']);
 
@@ -30,7 +29,6 @@ class Controller
 	    ob_clean();
 	    flush();
 	    readfile($_SERVER["DOCUMENT_ROOT"] . '/user-data/' . $Generator->filename . '.docx');
-
 	}
 }
 

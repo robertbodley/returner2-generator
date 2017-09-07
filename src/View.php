@@ -43,7 +43,7 @@ class View
 							<p class='lead'>Fill in the form below and click generate.</p>
 						</div>
 
-						<form action='/generate' method='get'>
+						<form action='/generate' method='GET'>
 							<div class='form-group'>
 								<div class='col-sm-6'>
 									<label for='exampleInputEmail1'>Test Name</label>
