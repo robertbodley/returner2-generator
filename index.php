@@ -3,6 +3,9 @@
 require 'vendor/autoload.php';
 require 'src/Controller.php';
 
+date_default_timezone_set('Africa/Lagos');//or change to whatever timezone you want
+
+
 $app = new Slim\App();
 
 $app->get('/', function ($request, $response, $args) {

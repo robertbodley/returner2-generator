@@ -24,5 +24,7 @@ return array(
     'Gears\\String\\' => array($vendorDir . '/gears/string/src'),
     'Gears\\Di\\' => array($vendorDir . '/gears/di/src'),
     'Gears\\' => array($vendorDir . '/gears/pdf/src'),
+    'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src/FontLib'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
+    'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
 );
