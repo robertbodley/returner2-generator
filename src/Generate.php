@@ -3,6 +3,7 @@
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+
 /**
 * 
 */
@@ -10,31 +11,45 @@ class Generate
 {
 	public $filename = '';
 
-	function generateQuiz($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate) {
-
+	function generateMain($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf) {
 
 		// instantiate and use the dompdf class
 		$options = new Options();
 		$options->set('isRemoteEnabled', true);
 		$dompdf = new Dompdf($options);
-		$questionOutOf = [6, 7, 8, 91, 3, 5, 12, 7, 8, 91, 3, 5, 12, 7, 8];
-		$html = $this->quizTemplate(30, 10, "numbers", $questionOutOf, "test");
-		return $html;
+
+		$html = $this->templateGenerator($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf);
+
+		// return $html;
 		$dompdf->loadHtml($html);
-
-		// (Optional) Setup the paper size and orientation
 		$dompdf->setPaper('A4', 'portrate');
-
-		// Render the HTML as PDF
 		$dompdf->render();
-
-		// Output the generated PDF to Browser
 		return $dompdf->stream();
 	}
 
-	function quizTemplate($rows, $cols, $headingType, $questionOutOf, $type) {
-		$table = $this->createTable($rows, $cols, $headingType, $questionOutOf, $type);
-		$colSpan = $cols+1;
+	function templateGenerator($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf) {
+
+		$qr = new QRCodeGenerator();
+		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate);
+
+		if ($type == "test") {
+			$table = $this->createTestTable($questionsOutOf);
+
+			if (sizeof($questionsOutOf)>5) {
+				$colSpan = 10;
+				$colSpanTwo = 11;
+			} else {
+				$colSpan = sizeof($questionsOutOf)*2;
+				$colSpanTwo = sizeof($questionsOutOf)*2+1;
+			}
+		} else {
+			$rows = $noQuestions;
+			$cols = $noAnswers;
+			$table = $this->createTable($rows, $cols);
+			$colSpan = $cols;
+		}
+
+		
 
 		$style = "
 			table.main, .main th, .main td {
@@ -91,12 +106,11 @@ class Generate
 			}
 
 			.qrHolder img {
-				width: 100px;
+				width: 150px;
 			}
 
 			td.studentNumber {
 				padding: 0px;
-				width: 35%;
 			}
 
 			.block div.hidden {
@@ -126,6 +140,10 @@ class Generate
 				border-top: 0px;
 			}
 
+			.border {
+				border: 1px solid black;
+			}
+
 		";
 
 		$body = "
@@ -144,7 +162,7 @@ class Generate
 					<h2>Student Number</h2>
 					<hr>
 			    </td>
-			    <td>
+			    <td style='width: 55%'>
 			    	<b>Instructions</b>
 					<ul style='font-size: 12px;'>
 						<li>
@@ -153,9 +171,7 @@ class Generate
 						<li>
 							Shade in your student number in the block to the left.
 						</li>
-						<li>
-							Shade your answers in the block below.
-						</li>
+						" . ($type=='test' ? '' : '<li>Shade your answers in the block below.</li>') . "
 						<li>
 							Use a dark pencil (so you can erase the mark if you make a mistake).
 						</li>
@@ -165,17 +181,18 @@ class Generate
 			  <tr>
 			    <td class='studentNumber'>
 					<div class='qrHolder'>
-						<div style='width: 65%; float: left;  font-size: 12px; line-height: 70px; padding-left: 10px; box-sizing: border-box;'>
+						<div style='width: 50%; float: left;  font-size: 9px; line-height: 100px; padding-left: 10px; box-sizing: border-box;'>
 							<b>Please do not write in the block</b>
 						</div>
-						<div style='width: 35%; height: 100px; float: right; margin-top: 5px; margin-bottom: 5px;'>
-							<img src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example'>
+						<div style='width: 50%; height: 150px; float: right; margin-top: 5px; margin-bottom: 5px;'>
+							<img src='{$imageSrc}'>
 						</div>
 						<div style='clear:both;'></div>
 					</div>
-					<b style='margin-left: 10px;'>Student Number</b>
+					<b style='margin-left: 85px;'>Student Number</b>
 					<table class='inside'>
 						<tr>
+
 							<td style='width: 25px;'>A</td>
 							<td class='block'><div></div></td>
 							<td class='block'><div></div></td>
@@ -453,9 +470,15 @@ class Generate
 			    </td>
 			    <td class='answersTable' rowspan='1'>
 					<table class='inside'>
-						<tr>
-							<td colspan='{$colSpan}'><b>" . ($type=='test' ? 'Marks' : 'Answers') . "</b></td>
+						". ($type=='test' ? '
+						<tr  style="border: 1px solid black" >
+							<td style="border: 1px solid black; background-color: rgb(200,200,200)"  colspan="'.$colSpanTwo.'"><b>Official Use Only!</b></td>
+						</tr>' : '') ."
+						<tr  style='border: 1px solid black' >
+							<td style='border: 1px solid black' colspan='1'></td>
+							<td style='border: 1px solid black; background-color: rgb(200,200,200)'  colspan='{$colSpan}'>" . ($type=='test' ? 'Questions' : 'Answers') . "</td>
 						</tr>
+
 						{$table}
 						
 					</table>
@@ -487,107 +510,80 @@ class Generate
 		return $html;
 	}
 
-	function createTable($rows, $cols, $headingType, $questionOutOf, $type) {
-		$table = "<tr><td style='width: 25px;'><b>Q</b></td>";
+	function createTable($rows, $cols) {
+		$table = "<tr><td style='width: 25px; border: 1px solid black'><b>Q</b></td>";
 
-		// Create heading
-		if ($headingType=="numbers") {
-			for ($i=0; $i < $cols; $i++) { 
-				
-				if ($i<=$rows) {
-					$table.="<td class='block'><b>{$i}</b></td>";
-				} else {
-					$table.="<td class='block'></td>";
-				}
-			} 
-		} else {
-			for ($i=0; $i < $cols; $i++) { 
-				$letter = chr(65+$i);
-				if ($i<=$rows) {
-					$table.="<td class='block'><b>{$letter}</b></td>";
-				} else {
-					$table.="<td class='block'></td>";
-				}
-			} 
-		}
+		for ($i=0; $i < $cols; $i++) { 
+			$letter = chr(65+$i);
+			if ($i<$rows) {
+				$table.="<td  style='border: 1px solid black' class='block'><b>{$letter}</b></td>";
+			} else {
+				$table.="<td class='block'></td>";
+			}
+		} 
 
-		//this sets the top border of outOfBlocks
-		if ($type=="test") {
-			$table.="<td style='width: 25px; border-bottom: 1px solid black;'></td></tr>";
-		} else {
-			$table.="<td style='width: 25px; border-bottom: 0px solid black;'></td></tr>";
-		}
+		$table.="</tr>";
 
 		// Create table
-		for ($i=1; $i <= 30; $i++) {
-			$question = round($i/2)-1; 
-			$questionSection = (($i+1)%2);
-			$amountOfAnswers = $questionOutOf[$question];
-			
+		for ($i=1; $i <= 30; $i++) {			
 
 			if ($i<=$rows) {
-				//set number format on side
-				if ($type=="test") {
-					$questionNumber = round($i/2);
-					if ($i%2==1) {
-						$table.= "<tr><td><b>{$questionNumber}</b></td>";
-					} else {
-						$table.= "<tr><td></td>";
-					}
-				} else {
-					$table.= "<tr><td><b>{$i}</b></td>";
-				}
 
-				//create actual blocks
-				if ($type == "test") {
-					for ($j=1; $j <= 10; $j++) { 
-						if ($j<=$cols && $amountOfAnswers>=$j-1 && $questionSection == 0) {
-							$table.="<td class='block'><div></div></td>";
-						} else if($j<=$cols && $amountOfAnswers>9 && $amountOfAnswers<20 && $j<=($amountOfAnswers%10) && $questionSection == 1) {
-							$table.="<td class='block'><div></div></td>";
-						} else if($j<=$cols && $amountOfAnswers>9 && $questionSection == 1 && $amountOfAnswers>20) {
-							$table.="<td class='block'><div></div></td>";
-						} else {
-							$table.="<td class='block'><div class='hidden'></div></td>";
-						}
-					}
-					if ($i%2==0) {
-						$table.= "<td><div class='outOfBlock noBorderTop'>/{$questionOutOf[($i/2)-1]}</div></td></tr>";
-					} else {
-						$table.= "<td><div class='outOfBlock noBorderBottom'></div></td></tr>";
-					}
-				} else {
-					for ($j=1; $j <= 10; $j++) { 
-						if ($j<=$cols) {
-							$table.="<td class='block'><div></div></td>";
-						} else {
-							$table.="<td class='block'><div class='hidden'></div></td>";
-						}
-					}
+				$table.= "<tr><td  style='border: 1px solid black'><b>{$i}</b></td>";
+
+				for ($j=1; $j <= 10; $j++) { 
+					if ($j<=$cols) {
+						$table.="<td class='block'><div></div></td>";
+					} 
 				}
-				
-			} else {
-				$table.= "
-					<tr>
-						<td></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td class='block'><div class='hidden'></div></td>
-						<td style='width: 25px;'></td>
-					</tr>";
-			}
+			} 
 		}
 
 		return $table;
 	}
 
+
+	function createTestTable($outOf) {
+		$questions = sizeof($outOf);
+		if ($questions<=5) {
+			return $this->createTestTableSection($questions, 1, $outOf);
+		} else {
+			return $this->createTestTableSection(5, 1, $outOf) . $this->createTestTableSection($questions-5, 6, $outOf);
+		}
+	}
+
+	function createTestTableSection($questions, $starting, $outOf) {
+		$html = "<tr  style='border: 1px solid black'><td style='border: 1px solid black' colspan='1'></td>";
+		$inputBoxOne = "<tr>
+					<td colspan='1' class='block'></td>";
+		$inputBoxTwo = "<tr>
+					<td colspan='1' class='block'></td>";
+		$seperationblock = "<tr>
+					<td colspan='1' class='block'></td>";
+		//add numbering
+		for ($i=0; $i < $questions; $i++) { 
+			$qNumber = $starting+$i;
+			$qOutOf = $outOf[$qNumber-1];
+			$html.="<td style='border: 1px solid black; background-color: rgb(200,200,200)' colspan='2'><b>{$qNumber}</b></td>";
+			$inputBoxOne.="<td colspan='2' style='border: 1px solid black; border-bottom: 1px solid white' class='block'></td>";
+			$inputBoxTwo.="<td colspan='2' style='border: 1px solid black; border-bottom: 1px solid black; text-align: right; padding-right: 3px;' class='block'>/{$qOutOf}</td>";
+			$seperationblock.="<td colspan='2' class='block'></td>";
+		}
+
+		$block = "";
+		for ($i=0; $i < $questions*2; $i++) { 
+			$block.="<td class='block'><div></div></td>";
+		}
+
+		//create one row
+		for ($i=0; $i < 10; $i++) { 
+			$html.="<tr><td style='border: 1px solid black; background-color: rgb(200,200,200)' class='block'>{$i}</td>".$block."</tr>";
+		}
+
+		$html.=$inputBoxOne."</tr>".$inputBoxTwo."</tr>".$seperationblock."</tr></tr>";
+
+		return $html;
+	}
 
 }
 
