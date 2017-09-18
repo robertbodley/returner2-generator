@@ -19,7 +19,7 @@ class Controller
 
 	function generateLoad() {
 		$Generator = new Generate();
-		echo $Generator->generateMain('quiz', $_GET['noq'], $_GET['noapq'], $_GET['department'], $_GET['courseCode'], $_GET['testDate'], [6,4,2,6,6,34,87,23,12,7]);
+		echo $Generator->generateMain('test', $_GET['noq'], $_GET['noapq'], $_GET['department'], $_GET['courseCode'], $_GET['testDate'], [6,4,2,6,6,34,87,23,12,7]);
 	}
 }
 

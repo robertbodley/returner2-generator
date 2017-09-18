@@ -75,7 +75,7 @@ class Generate
 
 			.inside th, .inside td {
 			    padding: 0px;
-			    height: 18px;
+			    height: 20px;
 			}
 
 			.block {
@@ -86,8 +86,8 @@ class Generate
 			}
 
 			.block div {
-				height: 10px; 
-				width: 10px; 
+				height: 14px; 
+				width: 14px; 
 				border: 1px solid black;
 				margin-left: 5px;
 				margin-top: 2px;
@@ -111,6 +111,7 @@ class Generate
 
 			td.studentNumber {
 				padding: 0px;
+				margin: 0px;
 			}
 
 			.block div.hidden {
@@ -149,7 +150,7 @@ class Generate
 		$body = "
 			<table class='main' style='width:100%'>
 			  <tr>
-			    <th colspan='2' style='text-align: center; font-size: 34px'>
+			    <th colspan='2' style='text-align: center; font-size: 24px'>
 			    	University of Cape Town<br>
 			    	Department of Computer Science<br>
 			    	" . ($type=='test' ? 'Test' : 'Quiz') . "
