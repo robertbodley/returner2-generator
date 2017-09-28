@@ -471,7 +471,7 @@ class Generate
 						</tr>
 					</table>
 			    </td>
-			    <td class='answersTable' rowspan='1' style='" . ($type=='test' ? 'padding-left: 30px;' : 'padding-left: 24px;') . "'>
+			    <td class='answersTable' rowspan='1' style='" . ($type=='test' ? 'padding-left: 28px;' : 'padding-left: 24px;') . "'>
 					<table class='inside'>
 						". ($type=='test' ? '
 						<tr  style="border: 1px solid black" >
