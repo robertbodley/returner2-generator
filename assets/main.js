@@ -5,6 +5,7 @@ $("#testType").change(function() {
 	       	"max" : 10
 	    });
 	    $("#noq").val(10);
+	    $("#noapq").val(10);
 	    $('#questionTotals').show();
 	} else {
 		$('#noapqBlock').show();
