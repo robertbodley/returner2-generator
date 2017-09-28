@@ -11,14 +11,14 @@ class Generate
 {
 	public $filename = '';
 
-	function generateMain($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf) {
+	function generateMain($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf) {
 
 		// instantiate and use the dompdf class
 		$options = new Options();
 		$options->set('isRemoteEnabled', true);
 		$dompdf = new Dompdf($options);
 
-		$html = $this->templateGenerator($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf);
+		$html = $this->templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf);
 
 		// return $html;
 		$dompdf->loadHtml($html);
@@ -27,26 +27,22 @@ class Generate
 		return $dompdf->stream();
 	}
 
-	function templateGenerator($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate, $questionsOutOf) {
+	function templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf) {
 
 		$qr = new QRCodeGenerator();
-		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $department, $courseCode, $testDate);
+		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $courseCode);
 
 		if ($type == "test") {
 			$table = $this->createTestTable($questionsOutOf);
 
-			if (sizeof($questionsOutOf)>5) {
-				$colSpan = 10;
-				$colSpanTwo = 11;
-			} else {
-				$colSpan = sizeof($questionsOutOf)*2;
-				$colSpanTwo = sizeof($questionsOutOf)*2+1;
-			}
+			$colSpan = 10;
+			$colSpanTwo = 11;
+
 		} else {
 			$rows = $noQuestions;
 			$cols = $noAnswers;
 			$table = $this->createTable($rows, $cols);
-			$colSpan = $cols;
+			$colSpan = 10;
 		}
 
 		
@@ -93,11 +89,15 @@ class Generate
 				margin-top: 2px;
 			}
 
+			.block div.hidden {
+				border: 1px solid white;
+			}
+
 			h2 {
 				padding: 0px;
 				margin: 0px;
-				margin-bottom: 25px;
-				font-size: 15px;
+				margin-bottom: 18px;
+				font-size: 12px;
 			}
 
 			.qrHolder {
@@ -162,6 +162,8 @@ class Generate
 					<hr>
 					<h2>Student Number</h2>
 					<hr>
+					<h2>Date</h2>
+					<hr>
 			    </td>
 			    <td style='width: 55%'>
 			    	<b>Instructions</b>
@@ -183,7 +185,7 @@ class Generate
 			    <td class='studentNumber'>
 					<div class='qrHolder'>
 						<div style='width: 50%; float: left;  font-size: 9px; line-height: 100px; padding-left: 10px; box-sizing: border-box;'>
-							<b>Please do not write in the block</b>
+							<b>Please do NOT write in this block</b>
 						</div>
 						<div style='width: 50%; height: 150px; float: right; margin-top: 5px; margin-bottom: 5px;'>
 							<img src='{$imageSrc}'>
@@ -441,7 +443,7 @@ class Generate
 							<td class='block'><div></div></td>
 						</tr>
 						<tr>
-							<td style='width: 25px;'>Z</td>
+							<td style='width: 25px;'>X</td>
 							<td class='block'><div></div></td>
 							<td class='block'><div></div></td>
 							<td class='block'><div></div></td>
@@ -469,7 +471,7 @@ class Generate
 						</tr>
 					</table>
 			    </td>
-			    <td class='answersTable' rowspan='1'>
+			    <td class='answersTable' rowspan='1' style='" . ($type=='test' ? 'padding-left: 30px;' : 'padding-left: 24px;') . "'>
 					<table class='inside'>
 						". ($type=='test' ? '
 						<tr  style="border: 1px solid black" >
@@ -514,7 +516,7 @@ class Generate
 	function createTable($rows, $cols) {
 		$table = "<tr><td style='width: 25px; border: 1px solid black'><b>Q</b></td>";
 
-		for ($i=0; $i < $cols; $i++) { 
+		for ($i=0; $i <= 9; $i++) { 
 			$letter = chr(65+$i);
 			if ($i<$rows) {
 				$table.="<td  style='border: 1px solid black' class='block'><b>{$letter}</b></td>";
@@ -527,17 +529,21 @@ class Generate
 
 		// Create table
 		for ($i=1; $i <= 30; $i++) {			
+			$table.= "<tr><td  style='border: 1px solid black'><b>{$i}</b></td>";
 
 			if ($i<=$rows) {
-
-				$table.= "<tr><td  style='border: 1px solid black'><b>{$i}</b></td>";
-
 				for ($j=1; $j <= 10; $j++) { 
 					if ($j<=$cols) {
 						$table.="<td class='block'><div></div></td>";
-					} 
+					} else {
+						$table.="<td class='block'><div class='hidden'></div></td>";
+					}
 				}
-			} 
+			} else {
+				for ($j=1; $j <= 10; $j++) { 
+					$table.="<td class='block'><div class='hidden'></div></td>";
+				}
+			}
 		}
 
 		return $table;
@@ -562,7 +568,7 @@ class Generate
 		$seperationblock = "<tr>
 					<td colspan='1' class='block'></td>";
 		//add numbering
-		for ($i=0; $i < $questions; $i++) { 
+		for ($i=0; $i < 5; $i++) { 
 			$qNumber = $starting+$i;
 			$qOutOf = $outOf[$qNumber-1];
 			$html.="<td style='border: 1px solid black; background-color: rgb(200,200,200)' colspan='2'><b>{$qNumber}</b></td>";
@@ -572,8 +578,13 @@ class Generate
 		}
 
 		$block = "";
-		for ($i=0; $i < $questions*2; $i++) { 
-			$block.="<td class='block'><div></div></td>";
+		for ($i=0; $i < 10; $i++) { 
+			if ($i < $questions*2) {
+				$block.="<td class='block'><div></div></td>";
+			} else {
+				$block.="<td class='block'><div class='hidden'></div></td>";
+			}
+			
 		}
 
 		//create one row

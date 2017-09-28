@@ -23,6 +23,7 @@ class View
 			</head>
 			<body>
 				{$body}
+				<script src='https://code.jquery.com/jquery-3.2.1.min.js' integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=' crossorigin='anonymous'></script>
 				<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
 				<script src='/assets/main.js'></script>
 			</body>
@@ -43,50 +44,75 @@ class View
 							<p class='lead'>Fill in the form below and click generate.</p>
 						</div>
 
-						<form action='/generate' method='GET'>
-							<div class='form-group'>
-								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Test Name</label>
-									<input name='testName' type='text' class='form-control' placeholder='Test 1'>
-								</div>
-								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Test Date</label>
-									<input name='testDate' type='date' class='form-control' placeholder='07/05/1996'>
-								</div>
-								<div class='clear'></div>
-							</div>
+						<form action='/generate' method='GET' name='generateForm' id='generateForm'>
 
 							<div class='form-group margin-bottom'>
 								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Course Code</label>
-									<input name='courseCode' type='text' class='form-control' placeholder='CSC3003S'>
-								</div>
-								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Number of Questions</label>
-									<input name='noq' class='form-control' type='number' min='1' max='30' value='15'>
-								</div>
-								<div class='clear'></div>
-							</div>
-
-							<div class='form-group margin-bottom'>
-								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Type</label>
-									<select name='testType' class='form-control'>
-										<option value='Test'>Test</option>
-										<option value='Quiz'>Quiz</option>
+									<label>Type</label>
+									<select name='testType' class='form-control' id='testType'>
+										<option value='quiz'>Quiz</option>
+										<option value='test'>Test</option>
 									</select>
 								</div>
 								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Number of Answers per Questions</label>
-									<input name='noapq' class='form-control' type='number' min='1' max='10' value='5'>
+									<label>Number of Questions</label>
+									<input id='noq' name='noq' class='form-control' type='number' min='1' max='30' value='15'>
 								</div>
 								<div class='clear'></div>
 							</div>
 
 							<div class='form-group margin-bottom'>
 								<div class='col-sm-6'>
-									<label for='exampleInputEmail1'>Department</label>
-									<input name='department' class='form-control' type='text' placeholder='Computer Science'>
+									<label>Course Code</label>
+									<input id='courseCode' name='courseCode' type='text' class='form-control' placeholder='CSC3003S'>
+								</div>
+								<div id='noapqBlock'  class='col-sm-6'>
+									<label>Number of Answers per Questions</label>
+									<input id='noapq' name='noapq' class='form-control' type='number' min='1' max='10' value='5'>
+								</div>
+								<div class='clear'></div>
+							</div>
+
+							<div class='form-group margin-bottom' id='questionTotals' style='display:none'>
+								<div id='q1Block' class='col-sm-1'>
+									<label>Q1 Total</label>
+									<input id='q1' name='q1' type='text' class='form-control'>
+								</div>
+								<div  id='q2Block' class='col-sm-1'>
+									<label>Q2 Total</label>
+									<input id='q2' name='q2' type='text' class='form-control'>
+								</div>
+								<div  id='q3Block' class='col-sm-1'>
+									<label>Q3 Total</label>
+									<input id='q3' name='q3' type='text' class='form-control'>
+								</div>
+								<div  id='q4Block' class='col-sm-1'>
+									<label>Q4 Total</label>
+									<input id='q4' name='q4' type='text' class='form-control'>
+								</div>
+								<div  id='q5Block' class='col-sm-1'>
+									<label>Q5 Total</label>
+									<input id='q5' name='q5' type='text' class='form-control'>
+								</div>
+								<div  id='q6Block' class='col-sm-1'>
+									<label>Q6 Total</label>
+									<input id='q6' name='q6' type='text' class='form-control'>
+								</div>
+								<div  id='q7Block' class='col-sm-1'>
+									<label>Q7 Total</label>
+									<input id='q7' name='q7' type='text' class='form-control'>
+								</div>
+								<div  id='q8Block' class='col-sm-1'>
+									<label>Q8 Total</label>
+									<input id='q8' name='q8' type='text' class='form-control'>
+								</div>
+								<div  id='q9Block' class='col-sm-1'>
+									<label>Q9 Total</label>
+									<input id='q9' name='q9' type='text' class='form-control'>
+								</div>
+								<div  id='q10Block' class='col-sm-1'>
+									<label>Q10 Total</label>
+									<input id='q10' name='q10' type='text' class='form-control'>
 								</div>
 								<div class='clear'></div>
 							</div>
