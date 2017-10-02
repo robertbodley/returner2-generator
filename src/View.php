@@ -67,6 +67,14 @@ class View
 									<input id='courseCode' name='courseCode' type='text' class='form-control' placeholder='CSC3003S'>
 								</div>
 								<div id='noapqBlock'  class='col-sm-6'>
+									<label>Number of Pages Per Test(Including front cover)</label>
+									<input id='pagesPerTest' name='pagesPerTest' class='form-control' type='number' min='1' value='5'>
+								</div>
+								<div class='clear'></div>
+							</div>
+
+							<div class='form-group margin-bottom'>
+								<div id='noapqBlock'  class='col-sm-6'>
 									<label>Number of Answers per Questions</label>
 									<input id='noapq' name='noapq' class='form-control' type='number' min='1' max='10' value='5'>
 								</div>

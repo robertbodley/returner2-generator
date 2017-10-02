@@ -25,7 +25,7 @@ class Controller
 			array_push($testQuestions, $_GET['q'.$i]);
 		}
 
-		echo $Generator->generateMain($_GET['testType'], $_GET['noq'], $_GET['noapq'], $_GET['courseCode'], $testQuestions);
+		echo $Generator->generateMain($_GET['testType'], $_GET['noq'], $_GET['noapq'], $_GET['courseCode'], $testQuestions, $_GET['pagesPerTest']);
 	}
 }
 

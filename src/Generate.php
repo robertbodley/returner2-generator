@@ -11,7 +11,7 @@ class Generate
 {
 	public $filename = '';
 
-	function generateMain($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf) {
+	function generateMain($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest) {
 
 		// instantiate and use the dompdf class
 		$options = new Options();
@@ -27,10 +27,10 @@ class Generate
 		return $dompdf->stream();
 	}
 
-	function templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf) {
+	function templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest) {
 
 		$qr = new QRCodeGenerator();
-		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $courseCode);
+		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $courseCode, $pagesPerTest);
 
 		if ($type == "test") {
 			$table = $this->createTestTable($questionsOutOf);
