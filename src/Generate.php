@@ -57,6 +57,7 @@ class Generate
 		$qr = new QRCodeGenerator();
 		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $courseCode, $pagesPerTest);
 
+		//select test or quiz
 		if ($type == "test") {
 			$table = $this->createTestTable($questionsOutOf);
 
@@ -71,7 +72,7 @@ class Generate
 		}
 
 		
-
+		//styling for PDF
 		$style = "
 			table.main, .main th, .main td {
 			    border: 4px solid black;
@@ -172,6 +173,8 @@ class Generate
 
 		";
 
+
+		//html body for pdf
 		$body = "
 			<table class='main' style='width:100%'>
 			  <tr>
@@ -557,11 +560,14 @@ class Generate
 	function createTable($rows, $cols) {
 		$table = "<tr><td style='width: 25px; border: 1px solid black'><b>Q</b></td>";
 
+		//generate blocks for table
 		for ($i=0; $i <= 9; $i++) { 
 			$letter = chr(65+$i);
 			if ($i<$rows) {
+				//creates headings
 				$table.="<td  style='border: 1px solid black' class='block'><b>{$letter}</b></td>";
 			} else {
+				//hide these blocks
 				$table.="<td class='block'></td>";
 			}
 		} 
@@ -572,11 +578,14 @@ class Generate
 		for ($i=1; $i <= 30; $i++) {			
 			$table.= "<tr><td  style='border: 1px solid black'><b>{$i}</b></td>";
 
+			//create answer blocks
 			if ($i<=$rows) {
 				for ($j=1; $j <= 10; $j++) { 
 					if ($j<=$cols) {
+						//show these blocks
 						$table.="<td class='block'><div></div></td>";
 					} else {
+						//hide these blocks
 						$table.="<td class='block'><div class='hidden'></div></td>";
 					}
 				}
@@ -601,8 +610,10 @@ class Generate
 	function createTestTable($outOf) {
 		$questions = sizeof($outOf);
 		if ($questions<=5) {
+			//generate first section if 5 or less blocks
 			return $this->createTestTableSection($questions, 1, $outOf);
 		} else {
+			//generate both blocks if more than 5 questions
 			return $this->createTestTableSection(5, 1, $outOf) . $this->createTestTableSection($questions-5, 6, $outOf);
 		}
 	}

@@ -27,11 +27,13 @@ class Controller
 	function generateLoad() {
 		$Generator = new Generate();
 
+		//creates array from all post variables
 		$testQuestions=array();
 		for ($i=1; $i <= $_GET['noq']; $i++) { 
 			array_push($testQuestions, $_GET['q'.$i]);
 		}
 
+		//generates the main page pdf and qr code that is appended to qr code
 		echo $Generator->generateMain($_GET['testType'], $_GET['noq'], $_GET['noapq'], $_GET['courseCode'], $testQuestions, $_GET['pagesPerTest'], $_GET['department']);
 	}
 }
