@@ -5,20 +5,32 @@ use Dompdf\Options;
 
 
 /**
-* 
+* Gernate
+* Manages the generation of test and quizzes
 */
 class Generate
-{
-	public $filename = '';
-
-	function generateMain($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest) {
+{	
+	/**
+	* generateMain
+	* The main handler function for generating tests and quizzes
+	*
+	* Parameters:
+	* 	type - The type of paper that should be generated. 
+	* 	noQuestions - number of questions in a test or quiz
+	* 	noAnswers - number of answers per question in a test or quiz
+	* 	courseCode - The course code that is embeded in a test or quiz
+	* 	questionsOutOf - Used for the generation of test papers and displays on the test table to help marker
+	* 	pagesPerTest - number of pages in a test (including the front page)
+	* 	department - department that the test is for.
+	*/
+	function generateMain($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest, $department) {
 
 		// instantiate and use the dompdf class
 		$options = new Options();
 		$options->set('isRemoteEnabled', true);
 		$dompdf = new Dompdf($options);
 
-		$html = $this->templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf);
+		$html = $this->templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest, $department);
 
 		// return $html;
 		$dompdf->loadHtml($html);
@@ -27,7 +39,20 @@ class Generate
 		return $dompdf->stream();
 	}
 
-	function templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest) {
+	/**
+	* templateGenerator
+	* Builds up the basic test or quiz and calls other functions to finish the build up
+	*
+	* Parameters:
+	* 	type - The type of paper that should be generated. 
+	* 	noQuestions - number of questions in a test or quiz
+	* 	noAnswers - number of answers per question in a test or quiz
+	* 	courseCode - The course code that is embeded in a test or quiz
+	* 	questionsOutOf - Used for the generation of test papers and displays on the test table to help marker
+	* 	pagesPerTest - number of pages in a test (including the front page)
+	* 	department - department that the test is for.
+	*/
+	function templateGenerator($type, $noQuestions, $noAnswers, $courseCode, $questionsOutOf, $pagesPerTest, $department) {
 
 		$qr = new QRCodeGenerator();
 		$imageSrc = $qr->generateQRCode($type, $noQuestions, $noAnswers, $courseCode, $pagesPerTest);
@@ -152,7 +177,7 @@ class Generate
 			  <tr>
 			    <th colspan='2' style='text-align: center; font-size: 24px'>
 			    	University of Cape Town<br>
-			    	Department of Computer Science<br>
+			    	Department of {$department}<br>
 			    	" . ($type=='test' ? 'Test' : 'Quiz') . "
 			    </th>
 			  </tr>
@@ -493,6 +518,14 @@ class Generate
 		return $this->baseTemplate($style, $body);
 	}
 
+	/**
+	* baseTemplate
+	* Base html template
+	*
+	* Parameters:
+	* 	style - css for the pdf
+	* 	body - body of the html
+	*/
 	function baseTemplate($style, $body) {
 		$html = "
 			<!DOCTYPE html>
@@ -513,6 +546,14 @@ class Generate
 		return $html;
 	}
 
+	/**
+	* createTable
+	* generates a quiz of rows rows and cols columns
+	*
+	* Parameters:
+	* 	rows - number of rows in the quiz answer table
+	* 	cols - number of columns in the quiz answer table
+	*/
 	function createTable($rows, $cols) {
 		$table = "<tr><td style='width: 25px; border: 1px solid black'><b>Q</b></td>";
 
@@ -550,6 +591,13 @@ class Generate
 	}
 
 
+	/**
+	* createTestTable
+	* Used to generate the test table for a test
+	*
+	* Parameters:
+	* 	outOf - array of what each question is out of
+	*/
 	function createTestTable($outOf) {
 		$questions = sizeof($outOf);
 		if ($questions<=5) {
@@ -559,6 +607,15 @@ class Generate
 		}
 	}
 
+	/**
+	* createTestTableSection
+	* Creates a single section in a test mark sheet
+	*
+	* Parameters:
+	* 	questions - number of questions
+	* 	starting - starting at question
+	* 	outOf - array of what each question is out of
+	*/
 	function createTestTableSection($questions, $starting, $outOf) {
 		$html = "<tr  style='border: 1px solid black'><td style='border: 1px solid black' colspan='1'></td>";
 		$inputBoxOne = "<tr>

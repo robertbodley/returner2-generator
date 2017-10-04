@@ -1,16 +1,16 @@
 <?php
 
 /**
-* 
+* Class: View
+* Description: Returns the different HTML views for different url paths.
 */
 class View
 {
 	
-	function __construct()
-	{
-		# code...
-	}
-
+	/**
+	* baseView
+	* Returns the basic html view
+	*/
 	function baseView($title, $body) {
 		$html = "
 			<!DOCTYPE html>
@@ -32,7 +32,10 @@ class View
 
 		return $html;
 	}
-
+	/**
+	* indexView
+	* Generates the basic HTML used to display the input form to generate a pdf.
+	*/
 	function indexView() {
 		$html = "
 			<br>		
@@ -77,6 +80,10 @@ class View
 								<div id='noapqBlock'  class='col-sm-6'>
 									<label>Number of Answers per Questions</label>
 									<input id='noapq' name='noapq' class='form-control' type='number' min='1' max='10' value='5'>
+								</div>
+								<div id='departmentBlock'  class='col-sm-6'>
+									<label>Department</label>
+									<input id='department' name='department' class='form-control' placeholder='Computer Science'>
 								</div>
 								<div class='clear'></div>
 							</div>
